@@ -43,6 +43,10 @@ class StravaAuthApiClient(
         return Single.error(error)
     }
 
+    fun scopes(uri: Uri): List<String>? {
+        return uri.getQueryParameter("scope")?.split(",")
+    }
+
     fun accessToken(authDetails: AuthDetails): Single<String> {
         return when (authDetails.hasExpired) {
             true -> refreshAccessToken(authDetails.refreshToken)

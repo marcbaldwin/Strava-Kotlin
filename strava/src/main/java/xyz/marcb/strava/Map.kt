@@ -1,6 +1,6 @@
 package xyz.marcb.strava
 
-data class Map (
+data class Map(
     val id: String,
     val summary_polyline: String?
 )

@@ -1,7 +1,7 @@
 package xyz.marcb.strava.auth
 
 import android.net.Uri
-import io.reactivex.Observable
+import io.reactivex.Single
 import xyz.marcb.strava.AuthDetails
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
@@ -25,13 +25,13 @@ class StravaAuthApiClient(
                 .build()
     }
 
-    fun authorize(uri: Uri): Observable<StravaAuthResponse> {
+    fun authorize(uri: Uri): Single<StravaAuthResponse> {
         val code = uri.getQueryParameter("code")
 
         if (code != null) {
             return stravaAuthApi.authorize(clientId, clientSecret, code)
                     .onErrorResumeNext { error: Throwable ->
-                        Observable.error(StravaErrorAdapter.convert(error))
+                        Single.error(StravaErrorAdapter.convert(error))
                     }
         }
 
@@ -40,22 +40,22 @@ class StravaAuthApiClient(
             else -> StravaError.AuthUnexpectedError(value)
         }
 
-        return Observable.error(error)
+        return Single.error(error)
     }
 
-    fun accessToken(authDetails: AuthDetails): Observable<String> {
+    fun accessToken(authDetails: AuthDetails): Single<String> {
         return when (authDetails.hasExpired) {
             true -> refreshAccessToken(authDetails.refreshToken)
-            false -> Observable.just(authDetails.accessToken)
+            false -> Single.just(authDetails.accessToken)
         }
     }
 
-    fun refreshAccessToken(refreshToken: String): Observable<String> {
+    fun refreshAccessToken(refreshToken: String): Single<String> {
         return stravaAuthApi.refreshToken(clientId, clientSecret, refreshToken)
-                .doOnNext { response -> onAuthDetailsRefreshed?.invoke(response.authDetails) }
+                .doOnSuccess { response -> onAuthDetailsRefreshed?.invoke(response.authDetails) }
                 .map { response -> response.access_token }
                 .onErrorResumeNext { error: Throwable ->
-                    Observable.error(StravaErrorAdapter.convert(error))
+                    Single.error(StravaErrorAdapter.convert(error))
                 }
     }
 }

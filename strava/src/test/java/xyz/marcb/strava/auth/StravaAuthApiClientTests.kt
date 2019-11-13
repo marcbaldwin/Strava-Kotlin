@@ -2,7 +2,7 @@ package xyz.marcb.strava.auth
 
 import android.net.Uri
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.Observable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -29,10 +29,9 @@ class StravaAuthApiClientTests {
         val uri = Mockito.mock(Uri::class.java)
         whenever(uri.getQueryParameter("code")).thenReturn("1234")
 
-        val response = StravaAuthResponse("access_token", "refresh_token", 1000L, Mockito.mock(
-            Athlete::class.java))
+        val response = StravaAuthResponse("access_token", "refresh_token", 1000L, Mockito.mock(Athlete::class.java))
         whenever(stravaAuthApi.authorize("client_id", "client_secret", "1234"))
-                .thenReturn(Observable.just(response))
+                .thenReturn(Single.just(response))
 
         stravaAuthApiClient.authorize(uri).test().assertValue(response)
     }
@@ -44,7 +43,7 @@ class StravaAuthApiClientTests {
 
         val error = Error()
         whenever(stravaAuthApi.authorize("client_id", "client_secret", "1234"))
-                .thenReturn(Observable.error(error))
+                .thenReturn(Single.error(error))
 
         stravaAuthApiClient.authorize(uri).test().assertError(error)
     }

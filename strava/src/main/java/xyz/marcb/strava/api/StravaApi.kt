@@ -1,6 +1,6 @@
 package xyz.marcb.strava.api
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.*
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
@@ -14,7 +14,7 @@ interface StravaApi {
             @Header("Authorization") accessToken: String,
             @Query("per_page") count: Int,
             @Query("page") page: Int
-    ): Observable<List<Activity>>
+    ): Single<List<Activity>>
 
     @GET("athlete/activities")
     fun activities(
@@ -23,14 +23,14 @@ interface StravaApi {
             @Query("before") before: Long,
             @Query("per_page") count: Int,
             @Query("page") page: Int
-    ): Observable<List<Activity>>
+    ): Single<List<Activity>>
 
     @GET("athlete/routes")
     fun routes(
         @Header("Authorization") accessToken: String,
         @Query("per_page") count: Int,
         @Query("page") page: Int
-    ): Observable<List<Route>>
+    ): Single<List<Route>>
 
     @Multipart
     @POST("uploads")
@@ -40,11 +40,11 @@ interface StravaApi {
         @Part("data_type") dataType: String,
         @Part("activity_type") activityType: String? = null,
         @Part("file\"; filename=\"file") file: File // horrible injection hack to set "filename", which is required by Strava
-    ): Observable<ActivityUploadStatus>
+    ): Single<ActivityUploadStatus>
 
     @GET("uploads/{id}")
     fun uploadStatus(
         @Header("Authorization") accessToken: String,
         @Path("id") uploadId: Long
-    ): Observable<ActivityUploadStatus>
+    ): Single<ActivityUploadStatus>
 }

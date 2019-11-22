@@ -2,7 +2,7 @@ package xyz.marcb.strava.error
 
 data class StravaErrorResponse(
         val message: String?,
-        val errors: List<Error>
+        val errors: List<Error>?
 ) {
 
     data class Error(
@@ -16,7 +16,7 @@ data class StravaErrorResponse(
     }
 
     val description: String
-        get() = (listOfNotNull(message) + errors.map { it.description }).joinToString(", ")
+        get() = (listOfNotNull(message) + errors.orEmpty().map { it.description }).joinToString(", ")
 
     companion object {
 

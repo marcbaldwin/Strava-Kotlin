@@ -25,7 +25,7 @@ object StravaErrorAdapter {
     private fun convert(response: StravaErrorResponse, error: HttpException): Error {
         return when (error.code()) {
             400 -> {
-                val isNotAuthorized = response.errors.firstOrNull { it.resource == StravaErrorResponse.refreshToken } != null
+                val isNotAuthorized = response.errors?.firstOrNull { it.resource == StravaErrorResponse.refreshToken } != null
                 if (isNotAuthorized) {
                     StravaError.RefreshTokenInvalid
                 } else {

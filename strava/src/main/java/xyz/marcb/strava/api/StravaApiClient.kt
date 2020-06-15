@@ -1,6 +1,8 @@
 package xyz.marcb.strava.api
 
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
 import xyz.marcb.strava.AuthDetails
@@ -9,12 +11,17 @@ import xyz.marcb.strava.auth.StravaAuthApiClient
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
 import java.io.File
+import java.lang.Error
 import java.util.concurrent.TimeUnit
 
 class StravaApiClient(
     private val stravaAuthApiClient: StravaAuthApiClient,
     private val stravaApi: StravaApi
 ) {
+
+    private val errorSubject = PublishSubject.create<Throwable>()
+
+    val errors: Observable<Throwable> = errorSubject.hide()
 
     fun activities(authDetails: AuthDetails, page: Int, pageSize: Int): Single<List<Activity>> {
         return request(authDetails) { accessToken ->
@@ -86,6 +93,7 @@ class StravaApiClient(
                     else -> Single.error(error)
                 }
             }
+            .doOnError(errorSubject::onNext)
     }
 
     private fun <T> request(accessToken: String, request: (String) -> Single<T>): Single<T> {

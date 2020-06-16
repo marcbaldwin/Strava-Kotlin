@@ -14,15 +14,19 @@ class StravaAuthApiClient(
 
     var onAuthDetailsRefreshed: ((AuthDetails) -> Unit)? = null
 
-    fun authorizeUri(redirectUrl: String, scope: String): Uri {
+    fun authorizeUri(redirectUrl: String, vararg scopes: String): Uri {
+        return authorizeUri(redirectUrl, scopes.toSet())
+    }
+
+    fun authorizeUri(redirectUrl: String, scopes: Set<String>): Uri {
         return Uri.parse("https://www.strava.com/oauth/mobile/authorize")
-                .buildUpon()
-                .appendQueryParameter("client_id", clientId)
-                .appendQueryParameter("redirect_uri", redirectUrl)
-                .appendQueryParameter("response_type", "code")
-                .appendQueryParameter("approval_prompt", "force")
-                .appendQueryParameter("scope", scope)
-                .build()
+            .buildUpon()
+            .appendQueryParameter("client_id", clientId)
+            .appendQueryParameter("redirect_uri", redirectUrl)
+            .appendQueryParameter("response_type", "code")
+            .appendQueryParameter("approval_prompt", "force")
+            .appendQueryParameter("scope", scopes.joinToString(","))
+            .build()
     }
 
     fun authorize(uri: Uri): Single<StravaAuthResponse> {

@@ -25,7 +25,7 @@ dependencies {
     api 'io.reactivex.rxjava2:rxjava:2.2.19'
 
     // Retrofit2
-    def retrofit_version = '2.2.0'
+    def retrofit_version = '2.6.2'
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     api "com.squareup.retrofit2:converter-moshi:$retrofit_version"

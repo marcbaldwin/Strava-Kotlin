@@ -7,9 +7,9 @@ import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
 
 class StravaAuthApiClient(
-        private val stravaAuthApi: StravaAuthApi,
-        private val clientId: String,
-        private val clientSecret: String
+    private val stravaAuthApi: StravaAuthApi,
+    private val clientId: String,
+    private val clientSecret: String
 ) {
 
     var onAuthDetailsRefreshed: ((AuthDetails) -> Unit)? = null
@@ -34,9 +34,9 @@ class StravaAuthApiClient(
 
         if (code != null) {
             return stravaAuthApi.authorize(clientId, clientSecret, code)
-                    .onErrorResumeNext { error: Throwable ->
-                        Single.error(StravaErrorAdapter.convert(error))
-                    }
+                .onErrorResumeNext { error: Throwable ->
+                    Single.error(StravaErrorAdapter.convert(error))
+                }
         }
 
         val error = when (val value = uri.getQueryParameter("error")) {
@@ -60,10 +60,10 @@ class StravaAuthApiClient(
 
     fun refreshAccessToken(refreshToken: String): Single<String> {
         return stravaAuthApi.refreshToken(clientId, clientSecret, refreshToken)
-                .doOnSuccess { response -> onAuthDetailsRefreshed?.invoke(response.authDetails) }
-                .map { response -> response.access_token }
-                .onErrorResumeNext { error: Throwable ->
-                    Single.error(StravaErrorAdapter.convert(error))
-                }
+            .doOnSuccess { response -> onAuthDetailsRefreshed?.invoke(response.authDetails) }
+            .map { response -> response.access_token }
+            .onErrorResumeNext { error: Throwable ->
+                Single.error(StravaErrorAdapter.convert(error))
+            }
     }
 }

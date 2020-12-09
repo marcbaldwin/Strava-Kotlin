@@ -1,14 +1,14 @@
 package xyz.marcb.strava.error
 
 data class StravaErrorResponse(
-        val message: String?,
-        val errors: List<Error>?
+    val message: String?,
+    val errors: List<Error>?
 ) {
 
     data class Error(
-            val resource: String?,
-            val field: String?,
-            val code: String?
+        val resource: String?,
+        val field: String?,
+        val code: String?
     ) {
 
         val description: String
@@ -16,7 +16,10 @@ data class StravaErrorResponse(
     }
 
     val description: String
-        get() = (listOfNotNull(message) + errors.orEmpty().map { it.description }).joinToString(", ")
+        get() = (
+            listOfNotNull(message) + errors.orEmpty()
+                .map { it.description }
+            ).joinToString(", ")
 
     companion object {
 

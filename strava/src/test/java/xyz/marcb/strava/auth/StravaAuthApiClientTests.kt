@@ -29,9 +29,14 @@ class StravaAuthApiClientTests {
         val uri = Mockito.mock(Uri::class.java)
         whenever(uri.getQueryParameter("code")).thenReturn("1234")
 
-        val response = StravaAuthResponse("access_token", "refresh_token", 1000L, Mockito.mock(Athlete::class.java))
+        val response = StravaAuthResponse(
+            "access_token",
+            "refresh_token",
+            1000L,
+            Mockito.mock(Athlete::class.java)
+        )
         whenever(stravaAuthApi.authorize("client_id", "client_secret", "1234"))
-                .thenReturn(Single.just(response))
+            .thenReturn(Single.just(response))
 
         stravaAuthApiClient.authorize(uri).test().assertValue(response)
     }
@@ -43,7 +48,7 @@ class StravaAuthApiClientTests {
 
         val error = Error()
         whenever(stravaAuthApi.authorize("client_id", "client_secret", "1234"))
-                .thenReturn(Single.error(error))
+            .thenReturn(Single.error(error))
 
         stravaAuthApiClient.authorize(uri).test().assertError(error)
     }
@@ -58,6 +63,7 @@ class StravaAuthApiClientTests {
     @Test
     fun `authorize given response is undefined`() {
         val uri = Mockito.mock(Uri::class.java)
-        stravaAuthApiClient.authorize(uri).test().assertError { it is StravaError.AuthUnexpectedError }
+        stravaAuthApiClient.authorize(uri).test()
+            .assertError { it is StravaError.AuthUnexpectedError }
     }
 }

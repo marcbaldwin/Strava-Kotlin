@@ -11,7 +11,6 @@ import xyz.marcb.strava.auth.StravaAuthApiClient
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
 import java.io.File
-import java.lang.Error
 import java.util.concurrent.TimeUnit
 
 class StravaApiClient(
@@ -21,7 +20,8 @@ class StravaApiClient(
 
     private val errorSubject = PublishSubject.create<Throwable>()
 
-    val errors: Observable<Throwable> = errorSubject.hide()
+    val errors: Observable<Throwable>
+        get() = errorSubject.hide()
 
     fun activities(authDetails: AuthDetails, page: Int, pageSize: Int): Single<List<Activity>> {
         return request(authDetails) { accessToken ->

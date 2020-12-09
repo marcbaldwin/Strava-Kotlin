@@ -8,15 +8,15 @@ interface StravaAuthApi {
 
     @POST("oauth/token?grant_type=authorization_code")
     fun authorize(
-            @Query("client_id") clientId: String,
-            @Query("client_secret") clientSecret: String,
-            @Query("code") code: String
+        @Query("client_id") clientId: String,
+        @Query("client_secret") clientSecret: String,
+        @Query("code") code: String
     ): Single<StravaAuthResponse>
 
     @POST("oauth/token?grant_type=refresh_token")
     fun refreshToken(
-            @Query("client_id") clientId: String,
-            @Query("client_secret") clientSecret: String,
-            @Query("refresh_token") refreshToken: String
+        @Query("client_id") clientId: String,
+        @Query("client_secret") clientSecret: String,
+        @Query("refresh_token") refreshToken: String
     ): Single<StravaAuthRefreshTokenResponse>
 }

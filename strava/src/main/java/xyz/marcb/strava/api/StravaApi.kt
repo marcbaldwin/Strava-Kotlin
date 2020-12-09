@@ -1,7 +1,13 @@
 package xyz.marcb.strava.api
 
 import io.reactivex.Single
-import retrofit2.http.*
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
 import xyz.marcb.strava.Route
@@ -11,18 +17,18 @@ interface StravaApi {
 
     @GET("athlete/activities")
     fun activities(
-            @Header("Authorization") accessToken: String,
-            @Query("per_page") count: Int,
-            @Query("page") page: Int
+        @Header("Authorization") accessToken: String,
+        @Query("per_page") count: Int,
+        @Query("page") page: Int
     ): Single<List<Activity>>
 
     @GET("athlete/activities")
     fun activities(
-            @Header("Authorization") accessToken: String,
-            @Query("after") after: Long,
-            @Query("before") before: Long,
-            @Query("per_page") count: Int,
-            @Query("page") page: Int
+        @Header("Authorization") accessToken: String,
+        @Query("after") after: Long,
+        @Query("before") before: Long,
+        @Query("per_page") count: Int,
+        @Query("page") page: Int
     ): Single<List<Activity>>
 
     @GET("athlete/routes")

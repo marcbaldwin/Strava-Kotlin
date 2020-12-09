@@ -30,7 +30,6 @@ dependencies {
     api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     api "com.squareup.retrofit2:converter-moshi:$retrofit_version"
 
-    testImplementation 'junit:junit:4.12'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$rootProject.ext.kotlin_version"
 }

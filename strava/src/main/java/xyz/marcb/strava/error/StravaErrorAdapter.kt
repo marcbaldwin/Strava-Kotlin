@@ -3,8 +3,11 @@ package xyz.marcb.strava.error
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
+import java.io.IOException
 
 object StravaErrorAdapter {
+
+    var onDecodingError: ((IOException) -> Unit)? = null
 
     private val responseAdapter: JsonAdapter<StravaErrorResponse> =
         Moshi.Builder().build().adapter(StravaErrorResponse::class.java)
@@ -21,7 +24,8 @@ object StravaErrorAdapter {
         try {
             val errorResponse = responseAdapter.fromJson(response) ?: return error
             return convert(errorResponse, error)
-        } catch (jsonDecodingError: Throwable) {
+        } catch (jsonDecodingError: IOException) {
+            onDecodingError?.invoke(jsonDecodingError)
             return error
         }
     }

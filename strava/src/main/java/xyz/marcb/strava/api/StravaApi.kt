@@ -10,10 +10,16 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
+import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.Route
 import java.io.File
 
 interface StravaApi {
+
+    @GET("athlete")
+    fun athlete(
+        @Header("Authorization") accessToken: String
+    ): Single<Athlete>
 
     @GET("athlete/activities")
     fun activities(

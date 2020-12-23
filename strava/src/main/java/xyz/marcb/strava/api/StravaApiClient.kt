@@ -5,6 +5,7 @@ import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
+import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.AuthDetails
 import xyz.marcb.strava.Route
 import xyz.marcb.strava.auth.StravaAuthApiClient
@@ -22,6 +23,12 @@ class StravaApiClient(
 
     val errors: Observable<Throwable>
         get() = errorSubject.hide()
+
+    fun athlete(authDetails: AuthDetails): Single<Athlete> {
+        return request(authDetails) { accessToken ->
+            stravaApi.athlete(accessToken)
+        }
+    }
 
     fun activities(authDetails: AuthDetails, page: Int, pageSize: Int): Single<List<Activity>> {
         return request(authDetails) { accessToken ->

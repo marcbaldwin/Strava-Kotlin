@@ -1,5 +1,8 @@
 package xyz.marcb.strava
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class Activity(
     val id: String,
     val name: String,

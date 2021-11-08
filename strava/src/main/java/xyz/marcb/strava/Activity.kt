@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 data class Activity(
     val id: String,
     val name: String,
-    val description: String,
+    val description: String?,
     val distance: Float,
     val elapsed_time: Long,
     val moving_time: Long,

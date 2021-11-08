@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion rootProject.ext._compileSdkVersion
@@ -27,4 +28,16 @@ dependencies {
 
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.marcbaldwin'
+                artifactId = 'Strava-Kotlin'
+            }
+        }
+    }
 }

@@ -3,6 +3,8 @@ package xyz.marcb.strava.api
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
+import java.io.File
+import java.util.concurrent.TimeUnit
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
 import xyz.marcb.strava.Athlete
@@ -11,8 +13,6 @@ import xyz.marcb.strava.Route
 import xyz.marcb.strava.auth.StravaAuthApiClient
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 class StravaApiClient(
     private val stravaAuthApiClient: StravaAuthApiClient,
@@ -61,6 +61,18 @@ class StravaApiClient(
                 count = count,
                 page = page
             )
+        }
+    }
+
+    fun routeGpx(authDetails: AuthDetails, id: Long): Single<ByteArray> {
+        return request(authDetails) { accessToken ->
+            stravaApi.routeGpx(accessToken = accessToken, id = id)
+        }
+        .map { response ->
+            response.body()?.bytes()
+                ?: throw response.errorBody()?.string()
+                    ?.let { StravaErrorAdapter.convert(it, response.code()) }
+                    ?: Error("Unexpected error")
         }
     }
 

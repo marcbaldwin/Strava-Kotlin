@@ -1,13 +1,13 @@
 package xyz.marcb.strava.auth
 
 import android.net.Uri
-import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.whenever
 import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.error.StravaError
 

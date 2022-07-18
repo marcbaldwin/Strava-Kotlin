@@ -22,6 +22,8 @@ sealed class StravaError {
     class Forbidden(response: StravaErrorResponse) :
         Error("Forbidden, response: '${response.description}'")
 
+    class ResourceNotFound(response: StravaErrorResponse) : Error(response.description)
+
     // 4XX Other
     class ApiUnexpectedError(response: StravaErrorResponse) :
         Error("Unexpected error, response: '${response.description}'")

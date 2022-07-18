@@ -2,8 +2,8 @@ package xyz.marcb.strava.error
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import retrofit2.HttpException
 import java.io.IOException
+import retrofit2.HttpException
 
 object StravaErrorAdapter {
 
@@ -19,19 +19,23 @@ object StravaErrorAdapter {
         }
     }
 
-    private fun convertHttpException(error: HttpException): Throwable {
-        val response = error.response()?.errorBody()?.string() ?: return error
+    fun convert(response: String, httpCode: Int): Throwable? {
         try {
-            val errorResponse = responseAdapter.fromJson(response) ?: return error
-            return convert(errorResponse, error)
+            val errorResponse = responseAdapter.fromJson(response) ?: return null
+            return convert(errorResponse, httpCode)
         } catch (jsonDecodingError: IOException) {
             onDecodingError?.invoke(jsonDecodingError)
-            return error
+            return null
         }
     }
 
-    private fun convert(response: StravaErrorResponse, error: HttpException): Error {
-        return when (error.code()) {
+    private fun convertHttpException(error: HttpException): Throwable {
+        val response = error.response()?.errorBody()?.string() ?: return error
+        return convert(response, error.code()) ?: error
+    }
+
+    private fun convert(response: StravaErrorResponse, httpCode: Int): Error {
+        return when (httpCode) {
             400 -> {
                 val isNotAuthorized = response.errors?.firstOrNull {
                     it.resource == StravaErrorResponse.refreshToken
@@ -41,6 +45,7 @@ object StravaErrorAdapter {
             }
             401 -> StravaError.AccessTokenInvalid
             403 -> StravaError.Forbidden(response)
+            404 -> StravaError.ResourceNotFound(response)
             else -> StravaError.ApiUnexpectedError(response)
         }
     }

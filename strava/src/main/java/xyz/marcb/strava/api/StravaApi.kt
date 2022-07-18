@@ -1,6 +1,9 @@
 package xyz.marcb.strava.api
 
 import io.reactivex.Single
+import java.io.File
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -8,11 +11,11 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.ActivityUploadStatus
 import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.Route
-import java.io.File
 
 interface StravaApi {
 
@@ -43,6 +46,13 @@ interface StravaApi {
         @Query("per_page") count: Int,
         @Query("page") page: Int
     ): Single<List<Route>>
+
+    @Streaming
+    @GET("routes/{id}/export_gpx")
+    fun routeGpx(
+        @Header("Authorization") accessToken: String,
+        @Path("id") id: Long
+    ): Single<Response<ResponseBody>>
 
     @Multipart
     @POST("uploads")

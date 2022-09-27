@@ -1,8 +1,8 @@
 buildscript {
     ext.kotlin_version = '1.7.10'
     ext._minSdkVersion = 14
-    ext._targetSdkVersion = 30
-    ext._compileSdkVersion = 30
+    ext._targetSdkVersion = 33
+    ext._compileSdkVersion = 33
 
     ext.retrofit_version = '2.9.0'
     ext.moshi_version = '1.13.0'

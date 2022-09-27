@@ -15,7 +15,7 @@ data class Activity(
     val start_date: String,
     val start_date_local: String,
     val timezone: String,
-    val map: Map,
+    val map: Map?,
     val commute: Boolean,
     val average_speed: Float,
     val max_speed: Float

@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
 }
 
@@ -11,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
     }
 
     buildTypes {
@@ -36,23 +35,21 @@ dependencies {
     api(libs.rxjava2)
     api(libs.retrofit2)
     api(libs.retrofit2.adapter.rxjava2)
-    api(libs.retrofit2.converter.moshi)
-
-    api(libs.moshi)
-    ksp(libs.moshi.kotlin.codegen)
+    api(libs.retrofit2.converter.serialization)
+    api(libs.kotlinx.serialization)
 
     // Testing
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.mockito.kotlin)
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.marcbaldwin"
+            artifactId = "Strava-Kotlin"
+            afterEvaluate {
                 from(components["release"])
-                groupId = "com.github.marcbaldwin"
-                artifactId = "Strava-Kotlin"
             }
         }
     }

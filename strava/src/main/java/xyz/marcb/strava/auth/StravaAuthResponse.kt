@@ -1,10 +1,10 @@
 package xyz.marcb.strava.auth
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.AuthDetails
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class StravaAuthResponse(
     val access_token: String,
     val refresh_token: String,
@@ -12,7 +12,7 @@ data class StravaAuthResponse(
     val athlete: Athlete
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class StravaAuthRefreshTokenResponse(
     val access_token: String,
     val refresh_token: String,

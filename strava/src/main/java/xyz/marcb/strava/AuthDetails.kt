@@ -1,9 +1,9 @@
 package xyz.marcb.strava
 
-import com.squareup.moshi.JsonClass
 import java.util.concurrent.TimeUnit
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class AuthDetails(
     val refreshToken: String,
     val accessToken: String,

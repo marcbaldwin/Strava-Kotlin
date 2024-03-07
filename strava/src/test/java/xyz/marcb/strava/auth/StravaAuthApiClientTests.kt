@@ -3,15 +3,22 @@ package xyz.marcb.strava.auth
 import android.net.Uri
 import io.reactivex.Single
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.whenever
 import xyz.marcb.strava.Athlete
 import xyz.marcb.strava.error.StravaError
 
 class StravaAuthApiClientTests {
+
+    @Rule
+    @JvmField
+    val rule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
     private lateinit var stravaAuthApi: StravaAuthApi
@@ -20,7 +27,6 @@ class StravaAuthApiClientTests {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         stravaAuthApiClient = StravaAuthApiClient(stravaAuthApi, "client_id", "client_secret")
     }
 

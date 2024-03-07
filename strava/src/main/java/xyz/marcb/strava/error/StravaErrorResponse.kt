@@ -1,14 +1,14 @@
 package xyz.marcb.strava.error
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class StravaErrorResponse(
     val message: String?,
     val errors: List<Error>?
 ) {
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Error(
         val resource: String?,
         val field: String?,

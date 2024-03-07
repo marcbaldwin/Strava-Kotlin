@@ -1,16 +1,20 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package xyz.marcb.strava.error
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import java.io.IOException
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 
 object StravaErrorAdapter {
 
     var onDecodingError: ((IOException) -> Unit)? = null
 
-    private val responseAdapter: JsonAdapter<StravaErrorResponse> =
-        Moshi.Builder().build().adapter(StravaErrorResponse::class.java)
+    private val json = Json {
+        explicitNulls = false
+        ignoreUnknownKeys = true
+    }
 
     fun convert(error: Throwable): Throwable {
         return when (error) {
@@ -20,12 +24,12 @@ object StravaErrorAdapter {
     }
 
     fun convert(response: String, httpCode: Int): Throwable? {
-        try {
-            val errorResponse = responseAdapter.fromJson(response) ?: return null
-            return convert(errorResponse, httpCode)
+        return try {
+            val errorResponse = json.decodeFromString<StravaErrorResponse>(response)
+            convert(errorResponse, httpCode)
         } catch (jsonDecodingError: IOException) {
             onDecodingError?.invoke(jsonDecodingError)
-            return null
+            null
         }
     }
 

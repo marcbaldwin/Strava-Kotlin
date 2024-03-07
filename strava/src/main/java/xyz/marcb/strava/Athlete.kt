@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Athlete(
-    val id: Int,
+    val id: Long,
     val firstname: String?,
     val lastname: String?,
     val country: String?,

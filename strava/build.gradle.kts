@@ -5,6 +5,9 @@ plugins {
     id("maven-publish")
 }
 
+
+group = "xyz.marcb.strava"
+
 android {
     namespace = "xyz.marcb.strava"
     compileSdk = libs.versions.compileSdk.get().toInt()

@@ -35,11 +35,14 @@ android {
 }
 
 dependencies {
-    api(libs.rxjava2)
-    api(libs.retrofit2)
-    api(libs.retrofit2.adapter.rxjava2)
-    api(libs.retrofit2.converter.serialization)
     api(libs.kotlinx.serialization)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.ktor.client.core)
+    api(libs.ktor.client.serialization)
+    api(libs.ktor.client.content.negotiation)
+    api(libs.ktor.client.json)
+    api(libs.ktor.client.logging)
+    api(libs.ktor.client.okhttp)
 
     // Testing
     testImplementation(libs.kotlin.test.junit)

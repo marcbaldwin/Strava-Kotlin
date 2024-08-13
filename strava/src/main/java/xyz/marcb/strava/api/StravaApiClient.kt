@@ -93,19 +93,9 @@ class StravaApiClient(
         }
     }
 
-//    suspend fun routeGpx(authDetails: AuthDetails, id: Long): ByteArray {
-//        return request("routes/$id/export_gpx", authDetails) { accessToken ->
-//            stravaApi.routeGpx(accessToken = accessToken, id = id)
-//        }
-//        .map { response ->
-//            response.body()?.bytes()
-//                ?: throw response.errorBody()?.string()
-//                    ?.let { StravaErrorAdapter.convert(it, response.code()) }
-//                    ?: Error("Unexpected error")
-//        }
-    /// @Path("id") id: Long
-//    parametersBuilder.append("id", page)
-//    }
+    suspend fun routeGpx(authDetails: AuthDetails, id: Long): ByteArray {
+        return request(path = "routes/$id/export_gpx", authDetails = authDetails)
+    }
 
     @Throws(Throwable::class)
     private suspend inline fun <reified T> request(

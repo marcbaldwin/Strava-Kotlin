@@ -6,7 +6,7 @@ compileSdk = "34"
 minSdk = "23"
 targetSdk = "34"
 androidGradlePlugin = "8.5.2"
-coroutines = "1.8.1"
+coroutines = "1.9.0"
 ktor = "2.3.12"
 #Dependencies
 mockito-kotlin = "5.2.1"

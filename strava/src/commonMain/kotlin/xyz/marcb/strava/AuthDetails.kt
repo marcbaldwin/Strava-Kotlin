@@ -1,6 +1,6 @@
 package xyz.marcb.strava
 
-import java.util.concurrent.TimeUnit
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,5 +11,5 @@ data class AuthDetails(
 ) {
 
     val hasExpired: Boolean
-        get() = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) >= accessTokenExpiry
+        get() = Clock.System.now().epochSeconds >= accessTokenExpiry
 }

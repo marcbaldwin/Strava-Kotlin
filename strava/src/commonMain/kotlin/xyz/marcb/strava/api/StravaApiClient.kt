@@ -12,7 +12,7 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.get
 import io.ktor.http.ParametersBuilder
 import io.ktor.serialization.kotlinx.json.json
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.json.Json
@@ -79,8 +79,8 @@ class StravaApiClient(
         pageSize: Int
     ): List<Activity> {
         return request(path = "athlete/activities", authDetails = authDetails) {
-            append("after", TimeUnit.MILLISECONDS.toSeconds(start).toString())
-            append("before", TimeUnit.MILLISECONDS.toSeconds(end).toString())
+            append("after", start.milliseconds.inWholeSeconds.toString())
+            append("before", end.milliseconds.inWholeSeconds.toString())
             append("per_page", pageSize.toString())
             append("page", page.toString())
         }

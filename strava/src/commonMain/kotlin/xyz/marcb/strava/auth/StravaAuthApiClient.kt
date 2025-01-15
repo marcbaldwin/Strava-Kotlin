@@ -1,6 +1,5 @@
 package xyz.marcb.strava.auth
 
-import android.net.Uri
 import io.ktor.client.HttpClient
 import io.ktor.client.call.HttpClientCall
 import io.ktor.client.call.body
@@ -14,9 +13,12 @@ import io.ktor.client.request.post
 import io.ktor.http.ParametersBuilder
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import xyz.marcb.strava.AuthDetails
+import xyz.marcb.strava.uri.UriBuilder
+import xyz.marcb.strava.uri.WrappedUri
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
 import xyz.marcb.strava.error.StravaErrorResponse
@@ -59,22 +61,16 @@ class StravaAuthApiClient(
         }
     }
 
-    fun authorizeUri(redirectUrl: String, vararg scopes: String): Uri {
-        return authorizeUri(redirectUrl, scopes.toSet())
-    }
-
-    fun authorizeUri(redirectUrl: String, scopes: Set<String>): Uri {
-        return Uri.parse("$BASE_URL/oauth/mobile/authorize")
-            .buildUpon()
+    fun authorizeUri(uriBuilder: UriBuilder, redirectUrl: String, scopes: Set<String>): UriBuilder {
+        return uriBuilder.setPath("$BASE_URL/oauth/mobile/authorize")
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", redirectUrl)
             .appendQueryParameter("response_type", "code")
             .appendQueryParameter("approval_prompt", "force")
             .appendQueryParameter("scope", scopes.joinToString(","))
-            .build()
     }
 
-    suspend fun authorize(uri: Uri): StravaAuthResponse {
+    suspend fun authorize(uri: WrappedUri): StravaAuthResponse {
         val code = uri.getQueryParameter("code")
 
         if (code != null) {
@@ -89,7 +85,7 @@ class StravaAuthApiClient(
         }
     }
 
-    fun scopes(uri: Uri): List<String>? {
+    fun scopes(uri: WrappedUri): List<String>? {
         return uri.getQueryParameter("scope")?.split(",")
     }
 

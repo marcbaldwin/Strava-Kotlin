@@ -1,10 +1,8 @@
 package xyz.marcb.strava.error
 
-import java.io.IOException
-
 object StravaErrorAdapter {
 
-    var onDecodingError: ((IOException) -> Unit)? = null
+    var onDecodingError: ((Throwable) -> Unit)? = null
 
     fun convert(response: StravaErrorResponse, httpCode: Int): StravaError {
         return when (httpCode) {

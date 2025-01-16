@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+
+    runs-on: macos-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Print the Git tag
+        run: echo "Release Tag ${{ github.event.release.tag_name }}"
+
+      - name: Build
+        run: ./gradlew assemble --stacktrace
+
+      - name: Release library
+        run: ./gradlew strava:publish -PversionTag=${{ github.event.release.tag_name }}

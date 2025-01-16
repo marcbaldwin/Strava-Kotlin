@@ -7,7 +7,12 @@ plugins {
     id("maven-publish")
 }
 
-group = "xyz.marcb.strava"
+val versionTag: String? by project
+
+group = "com.github.marcbaldwin"
+versionTag?.let {
+    version = it
+}
 
 kotlin {
     androidTarget {
@@ -71,11 +76,13 @@ android {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("release") {
-            groupId = "com.github.marcbaldwin"
-            artifactId = "Strava-Kotlin"
-            from(components["kotlin"])
+    repositories {
+        maven {
+            setUrl("https://maven.pkg.github.com/marcbaldwin/Strava-Kotlin")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }

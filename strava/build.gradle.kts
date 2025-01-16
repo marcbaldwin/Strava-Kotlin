@@ -8,6 +8,10 @@ plugins {
 }
 
 group = "xyz.marcb.strava"
+version = "3.0.0"
+
+val GITHUB_USER: String by project
+val GITHUB_TOKEN: String by project
 
 kotlin {
     androidTarget {
@@ -76,6 +80,16 @@ publishing {
             groupId = "com.github.marcbaldwin"
             artifactId = "Strava-Kotlin"
             from(components["kotlin"])
+        }
+    }
+
+    repositories {
+        maven {
+            setUrl("https://maven.pkg.github.com/marcbaldwin/Strava-Kotlin")
+            credentials {
+                username = GITHUB_USER
+                password = GITHUB_TOKEN
+            }
         }
     }
 }

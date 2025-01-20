@@ -13,8 +13,11 @@ import io.ktor.client.request.get
 import io.ktor.http.ParametersBuilder
 import io.ktor.serialization.kotlinx.json.json
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import xyz.marcb.strava.Activity
 import xyz.marcb.strava.Athlete
@@ -131,13 +134,15 @@ class StravaApiClient(
         accessToken: String,
         crossinline request: ParametersBuilder.() -> Unit,
     ): T {
-        val call = client.get(path) {
-            url {
-                headers.append("Authorization", "Bearer $accessToken")
-                parameters.request()
-            }
-        }.call
-        return request<T>(call)
+        return withContext(Dispatchers.IO) {
+            val call = client.get(path) {
+                url {
+                    headers.append("Authorization", "Bearer $accessToken")
+                    parameters.request()
+                }
+            }.call
+            request<T>(call)
+        }
     }
 
 

@@ -153,7 +153,7 @@ class StravaApiClient(
         } else {
             val errorResponse = call.body<StravaErrorResponse>()
             val error = StravaErrorAdapter.convert(errorResponse, call.response.status.value)
-            errorSubject.tryEmit(error)
+            errorSubject.emit(error)
             throw error
         }
     }

@@ -17,8 +17,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import xyz.marcb.strava.AuthDetails
-import xyz.marcb.strava.uri.UriBuilder
-import xyz.marcb.strava.uri.WrappedUri
 import xyz.marcb.strava.error.StravaError
 import xyz.marcb.strava.error.StravaErrorAdapter
 import xyz.marcb.strava.error.StravaErrorResponse
@@ -61,32 +59,33 @@ class StravaAuthApiClient(
         }
     }
 
-    fun authorizeUri(uriBuilder: UriBuilder, redirectUrl: String, scopes: Set<String>): UriBuilder {
-        return uriBuilder.setPath("$BASE_URL/oauth/mobile/authorize")
-            .appendQueryParameter("client_id", clientId)
-            .appendQueryParameter("redirect_uri", redirectUrl)
-            .appendQueryParameter("response_type", "code")
-            .appendQueryParameter("approval_prompt", "force")
-            .appendQueryParameter("scope", scopes.joinToString(","))
+    fun authorizeUri(redirectUrl: String, scopes: Set<String>): String {
+        return "$BASE_URL/oauth/mobile/authorize" +
+                "?client_id=$clientId" +
+                "&redirect_uri=$redirectUrl" +
+                "&response_type=code" +
+                "&approval_prompt=force" +
+                "&scope=${scopes.joinToString(",")}"
     }
 
-    suspend fun authorize(uri: WrappedUri): StravaAuthResponse {
-        val code = uri.getQueryParameter("code")
+    suspend fun authorize(uriQueryParameter: (String) -> String?): StravaAuthResponse {
+        val code = uriQueryParameter("code")
 
         if (code != null) {
-            return request(path = "/oauth/token?grant_type=authorization_code") {
+            return request(path = "/oauth/token") {
                 append("code", code)
+                append("grant_type", "authorization_code")
             }
         } else {
-            throw when (val value = uri.getQueryParameter("error")) {
+            throw when (val value = uriQueryParameter("error")) {
                 "access_denied" -> StravaError.AuthUserDeniedAccess
                 else -> StravaError.AuthUnexpectedError(value)
             }
         }
     }
 
-    fun scopes(uri: WrappedUri): List<String>? {
-        return uri.getQueryParameter("scope")?.split(",")
+    fun scopes(uriQueryParameter: (String) -> String?): List<String>? {
+        return uriQueryParameter("scope")?.split(",")
     }
 
     suspend fun accessToken(authDetails: AuthDetails): String {
@@ -98,9 +97,10 @@ class StravaAuthApiClient(
 
     suspend fun refreshAccessToken(refreshToken: String): String {
         val response = request<StravaAuthRefreshTokenResponse>(
-            path = "/oauth/token?grant_type=refresh_token"
+            path = "/oauth/token"
         ) {
             append("refresh_token", refreshToken)
+            append("grant_type", "refresh_token")
         }
         onAuthDetailsRefreshed?.invoke(response.authDetails)
 

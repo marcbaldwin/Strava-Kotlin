@@ -1,8 +1,6 @@
 package xyz.marcb.strava.api
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.HttpClientCall
-import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -25,8 +23,7 @@ import xyz.marcb.strava.AuthDetails
 import xyz.marcb.strava.Route
 import xyz.marcb.strava.auth.StravaAuthApiClient
 import xyz.marcb.strava.error.StravaError
-import xyz.marcb.strava.error.StravaErrorAdapter
-import xyz.marcb.strava.error.StravaErrorResponse
+import xyz.marcb.strava.request
 
 class StravaApiClient(
     private val stravaAuthApiClient: StravaAuthApiClient,
@@ -141,20 +138,12 @@ class StravaApiClient(
                     parameters.request()
                 }
             }.call
-            request<T>(call)
-        }
-    }
-
-
-    @Suppress("MagicNumber")
-    private suspend inline fun <reified T> request(call: HttpClientCall): T {
-        if (call.response.status.value in 200..299) {
-            return call.body<T>()
-        } else {
-            val errorResponse = call.body<StravaErrorResponse>()
-            val error = StravaErrorAdapter.convert(errorResponse, call.response.status.value)
-            errorSubject.emit(error)
-            throw error
+            try {
+                call.request<T>()
+            } catch (error: Throwable) {
+                errorSubject.emit(error)
+                throw error
+            }
         }
     }
 }

@@ -29,6 +29,10 @@ class StravaApiClient(
     private val stravaAuthApiClient: StravaAuthApiClient,
     enableLogging: Boolean = false,
 ) {
+
+    val errors: Flow<Throwable>
+        get() = _errors
+
     private val json = Json {
         explicitNulls = false
         ignoreUnknownKeys = true
@@ -49,10 +53,7 @@ class StravaApiClient(
         }
     }
 
-    private val errorSubject = MutableSharedFlow<Throwable>()
-
-    val errors: Flow<Throwable>
-        get() = errorSubject
+    private val _errors = MutableSharedFlow<Throwable>()
 
     suspend fun athlete(
         authDetails: AuthDetails,
@@ -103,25 +104,32 @@ class StravaApiClient(
         authDetails: AuthDetails,
         crossinline parameters: ParametersBuilder.() -> Unit = {},
     ): T {
-        try {
-            val accessToken = stravaAuthApiClient.accessToken(authDetails)
-            return request(path = path, accessToken = accessToken, request = parameters)
+        return try {
+            request(
+                path = path,
+                accessToken = stravaAuthApiClient.accessToken(authDetails),
+                request = parameters,
+            )
         } catch (error: Throwable) {
             when (error) {
-                is StravaError.AccessTokenInvalid -> {
-                    val refreshedAccessToken =
-                        stravaAuthApiClient.refreshAccessToken(authDetails.refreshToken)
-                    return request(
-                        path = path,
-                        accessToken = refreshedAccessToken,
-                        request = parameters
-                    )
-                }
+                is StravaError.AccessTokenInvalid -> request(
+                    path = path,
+                    accessToken = reauth(authDetails),
+                    request = parameters
+                )
 
-                else -> {
-                    throw error
-                }
+                else -> throw error
             }
+        }
+    }
+
+    @Throws(Throwable::class)
+    private suspend fun reauth(authDetails: AuthDetails): String {
+        try {
+            return stravaAuthApiClient.refreshAccessToken(authDetails.refreshToken)
+        } catch (error: Throwable) {
+            _errors.emit(error)
+            throw error
         }
     }
 
@@ -141,7 +149,7 @@ class StravaApiClient(
             try {
                 call.request<T>()
             } catch (error: Throwable) {
-                errorSubject.emit(error)
+                _errors.emit(error)
                 throw error
             }
         }

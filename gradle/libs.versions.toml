@@ -9,7 +9,7 @@ androidGradlePlugin = "8.8.0"
 coroutines = "1.10.1"
 ktor = "3.0.3"
 #Dependencies
-mockito-kotlin = "5.2.1"
+mockito-kotlin = "6.0.0"
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

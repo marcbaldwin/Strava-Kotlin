@@ -5,7 +5,7 @@ kotlin = "2.2.20"
 compileSdk = "34"
 minSdk = "23"
 targetSdk = "34"
-androidGradlePlugin = "8.8.0"
+androidGradlePlugin = "8.13.0"
 coroutines = "1.10.2"
 ktor = "3.0.3"
 #Dependencies

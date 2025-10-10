@@ -50,7 +50,7 @@ kotlin {
             api(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test.junit)
+            implementation(libs.kotlin.test)
         }
     }
 

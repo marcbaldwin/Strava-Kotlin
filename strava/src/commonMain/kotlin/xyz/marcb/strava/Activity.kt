@@ -12,11 +12,15 @@ data class Activity(
     val moving_time: Long,
     val total_elevation_gain: Float,
     val type: String,
+    val sport_type: String,
     val start_date: String,
     val start_date_local: String,
     val timezone: String,
+    val utc_offset: Float,
     val map: Map?,
     val commute: Boolean,
+    val trainer: Boolean,
+    val manual: Boolean,
     val average_speed: Float,
-    val max_speed: Float
+    val max_speed: Float,
 )

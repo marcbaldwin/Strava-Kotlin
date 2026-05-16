@@ -1,6 +1,6 @@
 [versions]
 #Build
-kotlin = "2.2.20"
+kotlin = "2.3.21"
 #Android SDK
 compileSdk = "36"
 minSdk = "23"

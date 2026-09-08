@@ -65,6 +65,7 @@ class StravaAuthApiClient(
                 "&scope=${scopes.joinToString(",")}"
     }
 
+    @Throws(Throwable::class)
     suspend fun authorize(uriQueryParameter: (String) -> String?): StravaAuthResponse {
         val code = uriQueryParameter("code")
 
@@ -85,6 +86,7 @@ class StravaAuthApiClient(
         return uriQueryParameter("scope")?.split(",")
     }
 
+    @Throws(Throwable::class)
     suspend fun accessToken(authDetails: AuthDetails): String {
         return when (authDetails.hasExpired) {
             true -> refreshAccessToken(authDetails.refreshToken)
@@ -92,6 +94,7 @@ class StravaAuthApiClient(
         }
     }
 
+    @Throws(Throwable::class)
     suspend fun refreshAccessToken(refreshToken: String): String {
         val response = request<StravaAuthRefreshTokenResponse>(
             path = "/oauth/token"

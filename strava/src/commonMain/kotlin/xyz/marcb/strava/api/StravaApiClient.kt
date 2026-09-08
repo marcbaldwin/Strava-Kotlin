@@ -55,12 +55,14 @@ class StravaApiClient(
 
     private val _errors = MutableSharedFlow<Throwable>()
 
+    @Throws(Throwable::class)
     suspend fun athlete(
         authDetails: AuthDetails,
     ): Athlete {
         return request(path = "athlete", authDetails = authDetails)
     }
 
+    @Throws(Throwable::class)
     suspend fun activities(
         authDetails: AuthDetails,
         page: Int,
@@ -72,6 +74,7 @@ class StravaApiClient(
         }
     }
 
+    @Throws(Throwable::class)
     suspend fun activities(
         authDetails: AuthDetails,
         start: Long,
@@ -87,6 +90,7 @@ class StravaApiClient(
         }
     }
 
+    @Throws(Throwable::class)
     suspend fun routes(authDetails: AuthDetails, count: Int, page: Int): List<Route> {
         return request(path = "athlete/routes", authDetails = authDetails) {
             append("per_page", count.toString())
@@ -94,6 +98,7 @@ class StravaApiClient(
         }
     }
 
+    @Throws(Throwable::class)
     suspend fun routeGpx(authDetails: AuthDetails, id: Long): ByteArray {
         return request(path = "routes/$id/export_gpx", authDetails = authDetails)
     }
